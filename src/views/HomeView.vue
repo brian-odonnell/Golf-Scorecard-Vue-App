@@ -14,57 +14,55 @@
 	<div v-else>
 	  	<p>Loading courses...</p>
 	</div>
-  </template>
+</template>
 
 <script lang="ts">
-import { EnumNumberMember } from '@babel/types';
-import { ref, reactive, onMounted } from 'vue';
+	import { ref, onMounted } from 'vue';
 
-interface HoleInfo {
-	number: number,
-	name: string,
-	par: number,
-	yards: number
-}
+	interface HoleInfo {
+		number: number;
+		name: string;
+		par: number;
+		yards: number;
+	}
 
-interface Holes {
-	year: string,
-	holeInfo: HoleInfo[]
-}
+	interface Holes {
+		year: string;
+		holeInfo: HoleInfo[];
+	}
 
-interface Course {
-	name: string,
-	id: string,
-	imagePath: string,
-	holes: Holes[],
+	interface Course {
+		name: string;
+		id: string;
+		imagePath: string;
+		holes: Holes[];
+	}
 
-}
+	export default {
+		setup() {
+			const courses = ref<Course[]>([]);
+			const isLoading = ref(false);
 
-export default {
-	setup() {
-		const courses = ref<Course[]>([]);
-		const isLoading = ref(false);
+			onMounted(async () => {
+				isLoading.value = true;
 
-		onMounted(async () => {
-			isLoading.value = true;
+				try {
+					const response = await fetch ('http://localhost:3000/courses');
+					const data = await response.json();
+					courses.value = data;
+				} catch (error) {
+					console.error(error);
+				}
 
-			try {
-				const response = await fetch ('http://localhost:3000/courses');
-				const data = await response.json();
-				courses.value = data;
-			} catch (error) {
-				console.error(error);
+				isLoading.value = false;
+			})
+
+			return {
+				courses,
+				isLoading
 			}
-
-			isLoading.value = false;
-		})
-
-		return {
-			courses,
-			isLoading
 		}
 	}
-}
 </script>
 
 <styles lang="scss">

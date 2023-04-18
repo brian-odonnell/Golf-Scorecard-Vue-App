@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
     path: '/Course/:id',
     name: 'course',
     component: CourseView,
-    props: true
+    props: (route) => ({id: String(route.params.id) })
   },
   // catch all (404)
   {
